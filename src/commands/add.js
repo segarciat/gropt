@@ -24,12 +24,13 @@ export function createAddCommand(handler) {
     .action((handler))
 }
 
-export function addCommandHandler(productNameArg, options, command) {
+export async function addCommandHandler(productNameArg, options, command) {
   // Validate arguments and option values.
   const amount = parseNumberString(options.amount)
   if (!options.unit && amount !== parseInt(amount)) {
     throw new Error(`Invalid options: received non-integer --amount ${amount} but did not provide --unit.`)
   }
+  console.log(options)
   const price = parseNumberString(options.price)
 
   // Get product and store from database.

@@ -6,7 +6,7 @@
 export function parseNumberString(s) {
   const n = parseFloat(s)
   if (isNaN(n) || n <= 0) {
-    throw new Error(`Expeted positive number, but got: ${s}`)
+    throw new Error(`Expected positive number, but got: ${s}`)
   }
   return n
 }

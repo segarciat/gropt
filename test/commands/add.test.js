@@ -23,14 +23,13 @@ tap.test('Handler for "add" subcommand called with required arguments and option
 
 tap.test('Passing non-positive amount or price to add handler should throw', function (t) {
   // Arrange
-  t.throws(() => addCommandHandler(['Apple'], { price: 'two', amount: '1' }))
-  t.throws(() => addCommandHandler(['Apple'], { price: '1', amount: 'two' }))
-  t.throws(() => addCommandHandler(['Apple'], { price: '0', amount: '1' }))
-  t.throws(() => addCommandHandler(['Apple'], { price: '1', amount: '0' }))
+  t.rejects(addCommandHandler(['Apple'], { price: 'two', amount: '1' }))
+  t.rejects(addCommandHandler(['Apple'], { price: '1', amount: 'two' }))
+  t.rejects(addCommandHandler(['Apple'], { price: '0', amount: '1' }))
+  t.rejects(addCommandHandler(['Apple'], { price: '1', amount: '0' }))
   t.end()
 })
 
-tap.test('A decimal amount without specifying --unit should be invalid', function (t) {
-  t.throws(() => addCommandHandler(['Apple'], { price: '1', amount: '1.5', store: 'TJ' }))
-  t.end()
+tap.test('A decimal amount without specifying --unit should be invalid', async function (t) {
+  t.rejects(addCommandHandler(['Apple'], { price: '1', amount: '1.5', store: 'TJ' }))
 })

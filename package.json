@@ -5,13 +5,16 @@
   "bin": "./src/bin/cmd.js",
   "type": "module",
   "scripts": {
-    "test": "tap"
+    "test": "tap",
+    "migrate": "node-pg-migrate"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "commander": "^11.1.0"
+    "commander": "^11.1.0",
+    "node-pg-migrate": "^6.2.2",
+    "pg": "^8.11.3"
   },
   "devDependencies": {
     "standard": "^17.1.0",
