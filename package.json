@@ -4,8 +4,13 @@
   "description": "",
   "bin": "./src/bin/cmd.js",
   "type": "module",
+  "imports": {
+    "#src/*": "./src/*"
+  },
   "scripts": {
     "test": "tap",
+    "test:unit": "tap --include ./test/unit/**/*.__EXTENSIONS__",
+    "test:integration": "tap --include ./test/integration/**/*.__EXTENSIONS__",
     "migrate": "node-pg-migrate"
   },
   "keywords": [],

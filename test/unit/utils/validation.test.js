@@ -1,5 +1,5 @@
 import tap from 'tap'
-import { parseNumberString as parsePositiveNumber } from '../../src/utils/validation.js'
+import { parseNumberString as parsePositiveNumber } from '../../../src/utils/validation.js'
 
 tap.test('Parses numerical string to number', function (t) {
   t.equal(parsePositiveNumber('1.5'), 1.5)

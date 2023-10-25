@@ -3,7 +3,7 @@
  * @param {*} s String meant to represent a positive number
  * @returns The numerical string parsed as a float.
  */
-export function parseNumberString(s) {
+export function parseNumberString (s) {
   const n = parseFloat(s)
   if (isNaN(n) || n <= 0) {
     throw new Error(`Expected positive number, but got: ${s}`)

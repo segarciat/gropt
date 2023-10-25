@@ -1,5 +1,5 @@
 import tap from 'tap'
-import { createAddCommand, addCommandHandler } from '../../src/commands/add.js'
+import { createAddCommand, addCommandHandler } from '#src/commands/add.js'
 
 tap.test('Handler for "add" subcommand called with required arguments and options correctly.', function (t) {
   // Arrange
