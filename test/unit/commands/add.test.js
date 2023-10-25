@@ -1,10 +1,11 @@
 import tap from 'tap'
-import { createAddCommand, addCommandHandler } from '#src/commands/add.js'
+import { createAddSubcommand, addCommandHandler } from '#src/commands/add.js'
 
 tap.test('Handler for "add" subcommand called with required arguments and options correctly.', function (t) {
   // Arrange
   const spyHandler = t.captureFn((productNameArg, options) => true)
-  const addCommand = createAddCommand(spyHandler)
+  const validUnits = ['foo']
+  const addCommand = createAddSubcommand(spyHandler, validUnits)
   const args = 'Red Bell Peppers --price 1.5 --amount 1 --store Trader Joes'.split(/\s+/)
 
   // Act

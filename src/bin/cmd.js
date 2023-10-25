@@ -1,7 +1,8 @@
 #! /usr/bin/env node
 
 import { Command } from 'commander'
-import { createAddCommand, addCommandHandler } from '../commands/add.js'
+import { createAddSubcommand, addCommandHandler } from '../commands/add.js'
+import { getValidUnits } from '#src/db/helpers.js'
 
 // Information matches the dev configuration in docker compose file; used for database pool connection.
 process.env.PGUSER = 'dev-user'
@@ -14,7 +15,11 @@ const program = new Command('gropt')
   .description('Grocery price tracker')
   .version('1.0.0')
 
-program.addCommand(createAddCommand(addCommandHandler))
+const validUnits = await getValidUnits()
+
+const addSubCommand = createAddSubcommand(addCommandHandler, validUnits)
+
+program.addCommand(addSubCommand)
 
 try {
   program.parse()
