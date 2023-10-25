@@ -1,18 +1,23 @@
 import pg from 'pg'
 
-const pool = new pg.Pool()
+const pool = new pg.Pool({
+  user: process.env.PGUSER,
+  password: process.env.PGPASSWORD,
+  database: process.env.PGDATABASE,
+  port: process.env.PGPORT,
+  host: process.env.PGHOST,
+  allowExitOnIdle: true
+})
 
 /**
- * Performs an SQL query given a query string and parameters to substitute.
- * @param {*} text The SQL query string.
- * @param {*} values The parameters to substitute.
- * @param {*} options Extra options, such as rowmode.
+ * Runs an SQL query given a query string and parameters to substitute.
+ * @param {*} sqlString The parametrized SQL query string.
+ * @param {*} parameters The parameters to substitute, required only when sqlString has parameters.
  * @returns The result of the query, which contains a rows array with results.
  */
-export async function query (text, values, options) {
+export async function query (sqlString, parameters) {
   return await pool.query({
-    ...options,
-    text,
-    values
+    text: sqlString,
+    values: parameters
   })
 }

@@ -1,11 +1,5 @@
 import tap from 'tap'
 
-process.env.PGUSER = 'dev-user'
-process.env.PGDATABASE = 'dev-user'
-process.env.PGPASSWORD = 'dev-password'
-process.env.PGPORT = 6000
-process.env.PGHOST = '127.0.0.1'
-
 tap.test('Gets array of valid units as strings.', async function (t) {
   // Arrange
   const mockQuery = async (text, values, options) => {
@@ -13,12 +7,12 @@ tap.test('Gets array of valid units as strings.', async function (t) {
       rows: [{ unit: 'lb' }, { unit: 'oz' }]
     }
   }
-  const { getValidUnits } = await t.mockImport('#src/db/helpers.js', {
+  const { default: Helpers } = await t.mockImport('#src/db/helpers.js', {
     '#src/db/index.js': { query: mockQuery }
   })
 
   // Act
-  const actualUnits = getValidUnits()
+  const actualUnits = Helpers.getValidUnits()
 
   // Assert
   t.resolveMatch(actualUnits, ['lb', 'oz'])

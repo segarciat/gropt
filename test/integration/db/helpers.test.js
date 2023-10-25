@@ -1,14 +1,12 @@
 import tap from 'tap'
-import { getValidUnits } from '#src/db/helpers.js'
+import DbHelpers from '#src/db/helpers.js'
+
+tap.before(async function () {
+  await import('dotenv/config')
+})
 
 tap.test('Loads array of strings representing units from database', async function (t) {
-  process.env.PGUSER = 'dev-user'
-  process.env.PGDATABASE = 'dev-user'
-  process.env.PGPASSWORD = 'dev-password'
-  process.env.PGPORT = 6000
-  process.env.PGHOST = '127.0.0.1'
-
-  const units = await getValidUnits()
+  const units = await DbHelpers.getValidUnits()
 
   t.type(units, Array)
   t.ok(units.length)
