@@ -2,6 +2,8 @@ import { Command, Option } from 'commander'
 import { parsePositiveNumber } from '../utils.js'
 import Products from '#src/db/repositories/products.js'
 import Stores from '#src/db/repositories/stores.js'
+import Purchases from '#src/db/repositories/purchases.js'
+import { errorCodes } from '#src/db/errors.js'
 // import { parsePrice, parseProductAmount } from '../utils/parsers.js'
 
 /**
@@ -17,10 +19,12 @@ export function createAddSubcommand (handler, validUnits) {
     .requiredOption('-s, --store <store_name...>', 'Store where product was bought.')
     .requiredOption('-p, --price <product_price>', 'Price of product')
     .requiredOption('-a, --amount <product_amount>', 'Amount of product.')
-    .addOption(new Option('-u, --measurement_unit <measurement_unit>', 'Amount measurement units. Default unitless for integer amounts.')
+    .addOption(new Option('-u, --measurement-unit <measurement_unit>', 'Amount measurement units. Default unitless for integer amounts.')
       .choices(validUnits)
     )
-    .option('-d, --date-purchased <date>', 'Date when product was purchased. Defauls to today.')
+    .addOption(new Option('-d, --purchased-on <date>', 'Date when product was purchased in YYYY-MM-DD format. Defauls to today.')
+      .argParser((dateStr) => new Date(dateStr))
+    )
     .option('-b, --brand <brand>', 'Brand of the product.')
     .action((handler))
 }
@@ -29,14 +33,14 @@ export async function addCommandHandler (productNameArg, options, command) {
   // Validate arguments and option values.
   const amount = parsePositiveNumber(options.amount)
   if (!options.measurementUnit && amount !== parseInt(amount)) {
-    throw new Error(`Invalid options: received non-integer --amount ${amount} but did not provide --unit.`)
+    command.error(`Invalid options: received non-integer --amount ${amount} but did not provide --unit.`)
   }
   console.log(options)
   const price = parsePositiveNumber(options.price)
 
   // Get product and store from database.
   const productName = productNameArg.join(' ')
-  console.log('Searching for product...')
+  console.log('Searching for matching product...')
   let product = await Products.findByName(productName)
   if (!product) {
     console.log('Did not find product. Creating it.')
@@ -45,9 +49,10 @@ export async function addCommandHandler (productNameArg, options, command) {
       brand: options.brand
     })
   }
+  console.log(product)
 
   const storeName = options.store.join(' ')
-  console.log('Searching for store')
+  console.log('Searching for matching store')
   let store = await Stores.findByName(storeName)
   if (!store) {
     console.log('Did not find store. Creating')
@@ -55,7 +60,24 @@ export async function addCommandHandler (productNameArg, options, command) {
       storeName
     })
   }
-  console.log(product)
   console.log(store)
-  // TODO: Get the productId from productName/brand combination, and storeId, from database.
+
+  try {
+    console.log('Attempting to create purchase')
+    const purchase = await Purchases.create({
+      productId: product.id,
+      storeId: store.id,
+      purchasedOn: options.purchasedOn || new Date(),
+      price,
+      amount,
+      unit: options.measurementUnit
+    })
+    console.log(purchase)
+  } catch (err) {
+    if (err.code === errorCodes.UNIQUE_CONSTRAINT) {
+      command.error(`A purchase for ${product.productName} at ${store.storeName} exists for ${options.purchasedOn?.toString() || 'today'}.`)
+    } else {
+      command.error(err.message)
+    }
+  }
 }

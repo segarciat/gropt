@@ -14,8 +14,4 @@ const addSubCommand = createAddSubcommand(addCommandHandler, validUnits)
 
 program.addCommand(addSubCommand)
 
-try {
-  program.parse()
-} catch (err) {
-  program.error(err)
-}
+program.parse()

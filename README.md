@@ -20,3 +20,18 @@ docker compose up -d
  DATABASE_URL=postgres://<USERNAME>:<PASSWORD>@<host>:<port>/<database> npm run migrate up
 gropt --help
 ```
+
+## Testing
+
+The following test commands are available:
+
+```bash
+# Run only unit tests.
+npm run test:unit
+
+# Run only integration tests.
+npm run test:integration
+
+# Run all tests (unit and integration).
+npm test
+```
