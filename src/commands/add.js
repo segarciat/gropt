@@ -1,5 +1,7 @@
 import { Command, Option } from 'commander'
-import { parseNumberString } from '../utils/validation.js'
+import { parsePositiveNumber } from '../utils.js'
+import Products from '#src/db/repositories/products.js'
+import Stores from '#src/db/repositories/stores.js'
 // import { parsePrice, parseProductAmount } from '../utils/parsers.js'
 
 /**
@@ -25,16 +27,35 @@ export function createAddSubcommand (handler, validUnits) {
 
 export async function addCommandHandler (productNameArg, options, command) {
   // Validate arguments and option values.
-  const amount = parseNumberString(options.amount)
+  const amount = parsePositiveNumber(options.amount)
   if (!options.measurementUnit && amount !== parseInt(amount)) {
     throw new Error(`Invalid options: received non-integer --amount ${amount} but did not provide --unit.`)
   }
   console.log(options)
-  const price = parseNumberString(options.price)
+  const price = parsePositiveNumber(options.price)
 
   // Get product and store from database.
   const productName = productNameArg.join(' ')
-  const { brand } = options
-  const store = options.store.join(' ')
+  console.log('Searching for product...')
+  let product = await Products.findByName(productName)
+  if (!product) {
+    console.log('Did not find product. Creating it.')
+    product = await Products.create({
+      productName,
+      brand: options.brand
+    })
+  }
+
+  const storeName = options.store.join(' ')
+  console.log('Searching for store')
+  let store = await Stores.findByName(storeName)
+  if (!store) {
+    console.log('Did not find store. Creating')
+    store = await Stores.create({
+      storeName
+    })
+  }
+  console.log(product)
+  console.log(store)
   // TODO: Get the productId from productName/brand combination, and storeId, from database.
 }

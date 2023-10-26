@@ -8,9 +8,9 @@
     "#src/*": "./src/*"
   },
   "scripts": {
-    "test": "tap",
-    "test:unit": "tap --include ./test/unit/**/*.__EXTENSIONS__",
-    "test:integration": "tap --include ./test/integration/**/*.__EXTENSIONS__",
+    "test": "tap --include=./test/**/*.test.__EXTENSIONS__",
+    "test:integration": "tap --include=./test/integration/**/*.test.__EXTENSIONS__",
+    "test:unit": "tap --include=./test/unit/**/*.test.__EXTENSIONS__",
     "migrate": "node-pg-migrate"
   },
   "keywords": [],
@@ -19,6 +19,7 @@
   "dependencies": {
     "commander": "^11.1.0",
     "dotenv": "^16.3.1",
+    "lodash.camelcase": "^4.3.0",
     "node-pg-migrate": "^6.2.2",
     "pg": "^8.11.3"
   },

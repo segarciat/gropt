@@ -21,3 +21,11 @@ export async function query (sqlString, parameters) {
     values: parameters
   })
 }
+
+/**
+ * Obtain a database client. Necessary when doing transactions. When done with client,
+ * it's necessary that you run "release".
+ */
+export async function getClient () {
+  return await pool.connect()
+}
