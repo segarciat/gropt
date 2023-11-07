@@ -1,44 +1,30 @@
 import tap from 'tap'
 import { Command } from 'commander'
-import { buildAddCommand, AddHandlerOptions } from '../../../src/commands/add.js'
+import { buildAddCommand, AddHandler, AddCommandOptions } from '../../../src/commands/add.js'
+import { DBConnection } from '../../../src/types.js'
 
-await tap.test('Handler for "add" subcommand called with required arguments and options correctly.', function (t) {
+await tap.test('All command args parsed correctly and passed to handler.', async function (t) {
   // Arrange
-  const spyHandler = t.captureFn(
-    async (options: AddHandlerOptions, command: Command) => {}
+  const handlerSpy = t.captureFn(
+    async (db: DBConnection, options: AddCommandOptions, command: Command) => {}
   )
-  const validUnits = ['foo']
-  const addCommand = buildAddCommand(spyHandler, validUnits)
-  const args = 'Red Bell Peppers --price 1.5 --amount 1 --store-name Trader Joes'.split(/\s+/)
+  const mockPool = {
+    query: async (...args) => ({rows: ['meters']})
+  }
+  const addCommand = await buildAddCommand(handlerSpy as AddHandler, mockPool as DBConnection)
+  const args = 'Red Bell Peppers --price 1.5 --amount 1 --store-name Trader Joes --brand The   Best'.split(/\s+/)
 
   // Act
   addCommand.parse(args, { from: 'user' })
 
   // Assert
-  t.match(spyHandler.calls[0].args[0], {
-    productName: 'Red Bell Peppers',
+  t.ok(handlerSpy.calls.length > 0)
+  t.match(handlerSpy.calls[0].args[1], {
+    productName: ['Red', 'Bell', 'Peppers'],
     price: 1.5,
     amount: 1,
-    storeName: 'Trader Joes'
+    storeName: ['Trader', 'Joes'],
+    brand: ['The', 'Best']
   })
-  // t.equal(spyHandler.calls[0].returned, true)
   t.end()
 })
-
-/**
- * TODO: Re-introduce a working version of this test.
- */
-// await tap.test('A decimal amount without specifying --unit should be invalid', async function (t) {
-//   // Arrange
-//   const spyHandler = t.captureFn((options: AddHandlerOptions, command: Command) => {})
-//   const validUnits = ['foo']
-//   const addCommand = buildAddCommand(spyHandler, validUnits)
-//   const args = 'Red Bell Peppers --price 1.5 --amount 1.5 --store-name Trader Joes'.split(/\s+/)
-
-//   // Act
-//   addCommand.parse(args, { from: 'user' })
-
-//   // Assert
-//   t.same(spyHandler.calls.length, 0)
-//   t.end()
-// })

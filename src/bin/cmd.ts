@@ -3,11 +3,10 @@ import 'dotenv/config'
 import { Command } from 'commander'
 import { buildAddCommand } from '../commands/add.js'
 import { addCommandHandler } from '../handlers/add.js'
-import { getValidUnits } from '../db/helpers.js'
+import { pool } from '../db.js'
 
 async function createProgram (): Promise<Command> {
-  const validUnits = await getValidUnits()
-  const addSubcommand = buildAddCommand(addCommandHandler, validUnits)
+  const addSubcommand = await buildAddCommand(addCommandHandler, pool)
 
   return new Command('gropt')
     .description('Grocery price tracker')

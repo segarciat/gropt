@@ -1,39 +1,29 @@
 import { Command, Option } from 'commander'
+import { DBConnection } from '../types.js'
+import { getValidUnits } from '../repositories/units.js'
 
-export interface AddHandlerOptions {
-  productName: string
-  storeName: string
+export interface AddCommandOptions {
+  productName: string[]
+  storeName: string[]
   price: number
   amount: number
-  unit?: string
-  datePurchased?: Date
-  brand?: string
+  units: string
+  datePurchased: Date
+  brand: string[]
 }
 
-export type AddHandler = (
-  options: AddHandlerOptions,
-  command: Command
-) => Promise<void>
+export type AddHandler = (db: DBConnection, options: AddCommandOptions, command: Command) => Promise<void>
 
 /**
  * Creates subcommand 'add' for recording a new grocery purchase.
  * @param handler Function executed with arguments and options parsed by this command.
- * @param validUnits Measurement Unit choices for -u option.
+ * @param db
  * @returns A prepared 'add' Command object.
  */
-export function buildAddCommand (handler: AddHandler, validUnits: string[]): Command {
-  interface AddCommandOptions {
-    productName: string[]
-    storeName: string[]
-    price: number
-    amount: number
-    units: string
-    datePurchased: Date
-    brand: string[]
-  }
+export async function buildAddCommand (handler: AddHandler, db: DBConnection): Promise<Command> {
+  const validUnits = await getValidUnits(db)
   return new Command('add')
     .description('Add a new grocery purchase.')
-    .exitOverride()
     .argument('<product_name...>', 'Name of product.')
     .requiredOption('-s, --store-name <store_name...>', 'Store where product was purchased.')
     .requiredOption('-p, --price <price>', 'Price of product.', parseFloat)
@@ -44,18 +34,8 @@ export function buildAddCommand (handler: AddHandler, validUnits: string[]): Com
     .addOption(new Option('-d, --date-purchased <date>', 'Date when product was purchased in YYYY-MM-DD format. Defauls to today.')
       .argParser((dateStr) => new Date(dateStr))
     )
-    .option('-b, --brand <brand>', 'Brand of the product.')
-    .action(async (productNameArg: string[], options: AddCommandOptions, command: Command) => {
-      if (options.units === undefined && options.amount !== Math.floor(options.amount)) {
-        command.error(`Invalid options: received non-integer --amount ${options.amount} but did not provide --units.`)
-      }
-      const handlerOptions: AddHandlerOptions = {
-        ...options,
-        productName: productNameArg.join(' '),
-        storeName: options.storeName.join(' '),
-        brand: options.brand?.join(' ')
-      }
-
-      await handler(handlerOptions, command)
+    .option('-b, --brand <brand...>', 'Brand of the product.')
+    .action(async (productName: string[], options: Omit<AddCommandOptions, 'productName'>, command) => {
+      await handler(db, { ...options, productName }, command)
     })
 }
