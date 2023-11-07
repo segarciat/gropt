@@ -13,7 +13,7 @@ The following sequence of commands will allow you to run the command as a binary
 ```bash
 npm install
 npm link
-chmod u+x src/bin/cmd.js
+chmod u+x src/bin/cmd.ts
 # Create docker container with Postgres database.
 docker compose up -d
 # Schema migrations; notice the intentional space at beginning of line to prevent recording command in shell history.

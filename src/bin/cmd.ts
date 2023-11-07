@@ -1,4 +1,4 @@
-#! /usr/bin/env node
+#!/usr/bin/env -S npx ts-node
 import 'dotenv/config'
 import { Command } from 'commander'
 import { buildAddCommand } from '../commands/add.js'

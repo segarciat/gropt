@@ -2,7 +2,7 @@
   "name": "gropt",
   "version": "1.0.0",
   "description": "",
-  "bin": "./dist/bin/cmd.js",
+  "bin": "./src/bin/cmd.ts",
   "type": "module",
   "scripts": {
     "test": "tap --include=./test/**/*.test.__EXTENSIONS__",
