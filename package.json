@@ -2,11 +2,8 @@
   "name": "gropt",
   "version": "1.0.0",
   "description": "",
-  "bin": "./src/bin/cmd.js",
+  "bin": "./dist/bin/cmd.js",
   "type": "module",
-  "imports": {
-    "#src/*": "./src/*"
-  },
   "scripts": {
     "test": "tap --include=./test/**/*.test.__EXTENSIONS__",
     "test:integration": "tap --include=./test/integration/**/*.test.__EXTENSIONS__",
@@ -24,7 +21,14 @@
     "pg": "^8.11.3"
   },
   "devDependencies": {
-    "standard": "^17.1.0",
-    "tap": "^18.5.2"
+    "@tsconfig/node18": "^18.2.2",
+    "@types/lodash.camelcase": "^4.3.8",
+    "tap": "^18.5.2",
+    "ts-node": "^10.9.1",
+    "ts-standard": "^12.0.2",
+    "typescript": "^5.2.2"
+  },
+  "ts-standard": {
+    "project": "./tsconfig.json"
   }
 }

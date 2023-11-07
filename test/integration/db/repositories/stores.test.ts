@@ -1,13 +1,14 @@
 import tap from 'tap'
+import pg from 'pg'
 import 'dotenv/config'
-import Context from '../context.js'
+import * as Context from '../context.js'
 
-let client
-let Stores
+let client: pg.PoolClient
+let storesModule: any
 
 tap.before(async function () {
   client = await Context.getClientFromPool()
-  Stores = await Context.mockDbAt('#src/db/repositories/stores.js', client)
+  storesModule = await Context.mockDbAt('../../../src/db/repositories/stores.js', client)
 })
 
 tap.after(async function () {
@@ -22,15 +23,15 @@ tap.afterEach(async function () {
   await client.query('ROLLBACK;')
 })
 
-tap.test('Creating a store in database enables finding it', async function (t) {
+await tap.test('Creating a store in database enables finding it', async function (t) {
   const storeDetails = {
     storeName: 'Circle',
     location: { x: 25, y: 27 }
   }
 
-  const nonExistentStore = await Stores.findByName(storeDetails.storeName)
-  const insertedStore = await Stores.create(storeDetails)
-  const foundStore = await Stores.findByName(storeDetails.storeName)
+  const nonExistentStore = await storesModule.findStoreByName(storeDetails.storeName)
+  const insertedStore = await storesModule.createStore(storeDetails)
+  const foundStore = await storesModule.findStoreByName(storeDetails.storeName)
 
   t.notOk(nonExistentStore)
   t.match(insertedStore, { id: Number })
@@ -38,10 +39,10 @@ tap.test('Creating a store in database enables finding it', async function (t) {
   t.match(insertedStore, storeDetails)
 })
 
-tap.test('Creating a store without location succeeds', async function (t) {
+await tap.test('Creating a store without location succeeds', async function (t) {
   const storeName = 'Best Supermarket'
 
-  const insertedStore = await Stores.create({ storeName })
+  const insertedStore = await storesModule.createStore({ storeName })
 
   t.match(insertedStore, { id: Number, storeName })
   t.notOk(insertedStore.location)

@@ -1,11 +1,11 @@
 import tap from 'tap'
-import { query } from '#src/db/index.js'
+import { query } from '../../../src/db/index.js'
 
 tap.before(async function () {
   await import('dotenv/config')
 })
 
-tap.test('Should connect to database without rejecting', async function (t) {
+await tap.test('Should connect to database without rejecting', async function (t) {
   // Arrange
 
   // Act

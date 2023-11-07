@@ -1,11 +1,6 @@
 import pg from 'pg'
 
 const pool = new pg.Pool({
-  user: process.env.PGUSER,
-  password: process.env.PGPASSWORD,
-  database: process.env.PGDATABASE,
-  port: process.env.PGPORT,
-  host: process.env.PGHOST,
   allowExitOnIdle: true
 })
 
@@ -15,7 +10,7 @@ const pool = new pg.Pool({
  * @param {*} parameters The parameters to substitute, required only when sqlString has parameters.
  * @returns The result of the query, which contains a rows array with results.
  */
-export async function query (sqlString, parameters) {
+export async function query (sqlString: string, parameters?: any[]): Promise<pg.QueryResult<any>> {
   return await pool.query({
     text: sqlString,
     values: parameters
@@ -26,6 +21,6 @@ export async function query (sqlString, parameters) {
  * Obtain a database client. Necessary when doing transactions. When done with client,
  * it's necessary that you run "release".
  */
-export async function getClient () {
+export async function getClient (): Promise<pg.PoolClient> {
   return await pool.connect()
 }
