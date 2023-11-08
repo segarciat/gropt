@@ -21,7 +21,7 @@ export async function createPurchase (db: DBConnection, purchase: Omit<Purchase,
   const { rows } = await db.query(`INSERT INTO 
       purchases (product_id, store_id, purchased_on, price, amount, unit)
       VALUES ($1, $2, $3, $4, $5, $6) RETURNING *;
-    `, [productId, storeId, purchasedOn, price, amount, unit]
+    `, [productId, storeId, convertDateToISOString(purchasedOn), price, amount, unit]
   )
   return parseDBPurchase(rows?.[0])
 }
@@ -36,4 +36,8 @@ function parseDBPurchase (row: any): Purchase {
     amount: row.amount,
     unit: row.unit
   }
+}
+
+function convertDateToISOString (date: Date): string {
+  return date.toISOString().split('T')[0]
 }
