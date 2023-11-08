@@ -36,7 +36,6 @@ export async function findStoreByName (db: DBConnection, storeName: string): Pro
     [storeName]
   )
   if (rows !== undefined && rows.length > 0) {
-    console.log(rows[0])
     return parseDBStore(rows[0])
   }
 }

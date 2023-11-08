@@ -27,10 +27,10 @@ await tap.test('Creating purchases in databases succeeds if related store and pr
   const purchaseDetails = {
     productId: product.id,
     storeId: store.id,
-    price: 15.0,
+    cost: 15.0,
     amount: 7,
-    unit: 'lb',
-    purchasedOn: new Date()
+    units: 'lb',
+    datePurchased: new Date()
   }
 
   // Act
@@ -43,8 +43,6 @@ await tap.test('Creating purchases in databases succeeds if related store and pr
     id: Number,
     ...purchaseDetails
   })
-
-  console.log("finished purchase test 1 successfully")
 })
 
 await tap.test('Creating a duplicate purchase throws an exception', async function (t) {
@@ -54,10 +52,10 @@ await tap.test('Creating a duplicate purchase throws an exception', async functi
   const purchaseDetails = {
     productId: product.id,
     storeId: store.id,
-    price: 15.0,
+    cost: 15.0,
     amount: 7,
-    unit: 'lb',
-    purchasedOn: new Date()
+    units: 'lb',
+    datePurchased: new Date()
   }
 
   const purchase = await createPurchase(mockConnection, purchaseDetails)
@@ -68,6 +66,4 @@ await tap.test('Creating a duplicate purchase throws an exception', async functi
     id: Number,
     ...purchaseDetails
   })
-
-  console.log("finished purchase test 2 successfully")
 })

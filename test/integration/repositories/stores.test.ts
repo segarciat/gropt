@@ -41,5 +41,4 @@ await tap.test('Creating a store without location succeeds', async function (t) 
 
   t.match(insertedStore, { id: Number, storeName })
   t.notOk(insertedStore.location)
-  console.log("finished store test successfully")
 })

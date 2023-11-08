@@ -4,10 +4,10 @@ export interface Purchase {
   id: number
   productId: number
   storeId: number
-  purchasedOn: Date
-  price: number
+  datePurchased: Date
+  cost: number
   amount: number
-  unit?: string
+  units?: string
 }
 
 /**
@@ -17,11 +17,11 @@ export interface Purchase {
  * @returns The product from the database.
  */
 export async function createPurchase (db: DBConnection, purchase: Omit<Purchase, 'id'>): Promise<Purchase> {
-  const { productId, storeId, purchasedOn, price, amount, unit } = purchase
+  const { productId, storeId, datePurchased: purchasedOn, cost, amount, units } = purchase
   const { rows } = await db.query(`INSERT INTO 
-      purchases (product_id, store_id, purchased_on, price, amount, unit)
+      purchases (product_id, store_id, date_purchased, cost, amount, units)
       VALUES ($1, $2, $3, $4, $5, $6) RETURNING *;
-    `, [productId, storeId, convertDateToISOString(purchasedOn), price, amount, unit]
+    `, [productId, storeId, convertDateToISOString(purchasedOn), cost, amount, units]
   )
   return parseDBPurchase(rows?.[0])
 }
@@ -31,10 +31,10 @@ function parseDBPurchase (row: any): Purchase {
     id: row.id,
     productId: row.product_id,
     storeId: row.store_id,
-    purchasedOn: row.purchased_on,
-    price: row.price,
+    datePurchased: row.date_purchased,
+    cost: row.cost,
     amount: row.amount,
-    unit: row.unit
+    units: row.units
   }
 }
 

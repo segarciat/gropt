@@ -11,10 +11,10 @@ export async function addPurchaseHandler (db: DBConnection, options: AddPurchase
   const purchase = await createPurchase(db, {
     productId: options.productId,
     storeId: options.storeId,
-    purchasedOn: options.datePurchased ?? new Date(),
-    price: options.cost,
+    datePurchased: options.datePurchased ?? new Date(),
+    cost: options.cost,
     amount: options.amount,
-    unit: options.units
+    units: options.units
   })
   console.table(purchase)
 }

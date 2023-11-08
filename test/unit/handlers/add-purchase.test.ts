@@ -47,9 +47,9 @@ tap.test("add purchase handler", async function(t) {
       productId: purchase.productId,
       storeId: purchase.storeId,
       amount: purchase.amount,
-      price: purchase.cost,
-      purchasedOn: Date,
-      unit: undefined,
+      cost: purchase.cost,
+      datePurchased: Date,
+      units: undefined,
     })
   })
 
@@ -90,9 +90,9 @@ tap.test("add purchase handler", async function(t) {
       productId: purchase.productId,
       storeId: purchase.storeId,
       amount: purchase.amount,
-      price: purchase.cost,
-      purchasedOn: Date,
-      unit: purchase.units,
+      cost: purchase.cost,
+      datePurchased: Date,
+      units: purchase.units,
     })
   })
 })

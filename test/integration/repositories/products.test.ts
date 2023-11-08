@@ -10,14 +10,12 @@ let mockConnection: DBConnection
 tap.beforeEach(async function () {
   mockConnection = await pool["_pool"].connect()
   await mockConnection.query('BEGIN;')
-  console.log("beforeEach finished")
 })
 
 tap.afterEach(async function () {
   await mockConnection.query('ROLLBACK;')
   const client = mockConnection as pg.PoolClient
   client.release()
-  console.log("afterEach finished")
 })
 
 await tap.test('Creating a product in database enables finding it', async function (t) {
@@ -34,5 +32,4 @@ await tap.test('Creating a product in database enables finding it', async functi
   t.match(insertedProduct, { id: Number })
   t.same(insertedProduct, foundProduct)
   t.match(insertedProduct, productDetails)
-  console.log("finished product test successfully")
 })
