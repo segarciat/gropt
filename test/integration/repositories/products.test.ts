@@ -30,6 +30,6 @@ await tap.test('Creating a product in database enables finding it', async functi
 
   t.notOk(nonExistentProduct)
   t.match(insertedProduct, { id: Number })
-  t.same(insertedProduct, foundProduct)
+  t.same(insertedProduct, foundProduct?.[0])
   t.match(insertedProduct, productDetails)
 })

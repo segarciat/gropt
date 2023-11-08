@@ -22,10 +22,10 @@ tap.afterEach(async function () {
 
 await tap.test('Creating purchases in databases succeeds if related store and product exist.', async function (t) {
   // Arrange
-  const product = await createProduct(mockConnection, { productName: 'Apples' })
+  const product = await createProduct(mockConnection, { productName: 'Apples', brand: 'Natures Best'})
   const store = await createStore(mockConnection, { storeName: 'Supermarket' })
   const purchaseDetails = {
-    productId: product.id,
+    productId: product!.id,
     storeId: store.id,
     cost: 15.0,
     amount: 7,
@@ -47,10 +47,10 @@ await tap.test('Creating purchases in databases succeeds if related store and pr
 
 await tap.test('Creating a duplicate purchase throws an exception', async function (t) {
   // Arrange
-  const product = await createProduct(mockConnection, { productName: 'Apples' })
+  const product = await createProduct(mockConnection, { productName: 'Apples', brand: 'Natures Best'})
   const store = await createStore(mockConnection, { storeName: 'Supermarket' })
   const purchaseDetails = {
-    productId: product.id,
+    productId: product!.id,
     storeId: store.id,
     cost: 15.0,
     amount: 7,

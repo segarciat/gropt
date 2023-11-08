@@ -17,6 +17,7 @@ export function buildAddProductCommand (db: DBConnection, handler: AddProductHan
       .argParser(multiWordParser)
     )
     .addOption(new Option('-b, --brand <brand...>', 'Brand of the product.')
+      .makeOptionMandatory()
       .argParser(multiWordParser)
     )
     .action(async (options: AddProductHandlerOptions, command) => {
