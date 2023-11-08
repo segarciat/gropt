@@ -10,7 +10,7 @@ export interface AddProductHandlerOptions {
 export type AddProductHandler = (db: DBConnection, options: AddProductHandlerOptions) => Promise<void>
 
 export function buildAddProductCommand (db: DBConnection, handler: AddProductHandler): Command {
-  return new Command('add product')
+  return new Command('product')
     .description('Add a new product.')
     .addOption(new Option('-n, --product-name <product_name...>', 'Name of product.')
       .makeOptionMandatory()
