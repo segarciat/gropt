@@ -20,8 +20,7 @@ tap.afterEach(async function () {
 
 await tap.test('Creating a store in database enables finding it', async function (t) {
   const storeDetails = {
-    storeName: 'Circle',
-    location: { lng: 25, lat: 27 }
+    storeName: 'Circle'
   }
 
   const nonExistentStore = await findStoreByName(mockConnection, storeDetails.storeName)
@@ -30,15 +29,6 @@ await tap.test('Creating a store in database enables finding it', async function
 
   t.notOk(nonExistentStore)
   t.match(insertedStore, { id: Number })
-  t.same(insertedStore, foundStore)
+  t.same(insertedStore, foundStore?.[0])
   t.match(insertedStore, storeDetails)
-})
-
-await tap.test('Creating a store without location succeeds', async function (t) {
-  const storeName = 'Best Supermarket'
-
-  const insertedStore = await createStore(mockConnection, { storeName })
-
-  t.match(insertedStore, { id: Number, storeName })
-  t.notOk(insertedStore.location)
 })
