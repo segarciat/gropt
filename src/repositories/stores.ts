@@ -5,6 +5,8 @@ export interface Store {
   storeName: string
 }
 
+export type StoreIdentifiers = Pick<Store, 'id' | 'storeName'>
+
 /**
  * Creates a new store in the database.
  * @param db Connection used to make the database request.
@@ -24,20 +26,46 @@ export async function createStore (db: DBConnection, store: Omit<Store, 'id'>): 
      RETURNING *;`,
     [storeName]
   )
-  return parseDBStore(rows)?.[0]
+  return parseDBStores(rows)?.[0]
 }
 
 /**
- * Get store from the database matching the given name, if it exists.
+ * Gets all stores from the database.
  * @param db Connection used to make the database request.
- * @param storeName Name of desired store.
+ * @returns Array of all stores in database.
  */
-export async function findStoreByName (db: DBConnection, storeName: string): Promise<Store[] | undefined> {
+export async function findAllStores (db: DBConnection): Promise<StoreIdentifiers[] | undefined> {
+  const { rows } = await db.query('SELECT id, store_name FROM stores ORDER BY store_name ASC;')
+  return parseDBStores(rows)
+}
+
+/**
+ * Get all stores from the database matching the given pattern, if it exists
+ * @param db Connection used to make the database request.
+ * @param pattern Pattern for matching the store name, at the moment only supports substring.
+ */
+export async function findStoresByPattern (db: DBConnection, pattern: string): Promise<StoreIdentifiers[] | undefined> {
   const { rows } = await db.query(
-    'SELECT * FROM stores WHERE store_name = $1;',
-    [storeName]
+    `SELECT id, store_name FROM stores
+    WHERE POSITION(UPPER($1) in UPPER(store_name)) > 0
+    ORDER BY store_name ASC;`,
+    [pattern]
   )
-  return parseDBStore(rows)
+  return parseDBStores(rows)
+}
+
+/**
+ * Gets a store from the database matching the given id, if one exists.
+ * @param db Connection used to make the database request.
+ * @param id The id of an existing store in the database.
+ * @returns The single store that matches, or undefined if none match.
+ */
+export async function findStoreById (db: DBConnection, id: number): Promise<Store | undefined> {
+  const { rows } = await db.query(
+    'SELECT * FROM stores WHERE id = $1 ORDER BY store_name ASC',
+    [id]
+  )
+  return parseDBStores(rows)?.[0]
 }
 
 /**
@@ -45,7 +73,7 @@ export async function findStoreByName (db: DBConnection, storeName: string): Pro
  * @param row Object representing row from stores database.
  * @returns Equivalent Store object.
  */
-function parseDBStore (rows: any[] | undefined): Store[] | undefined {
+function parseDBStores (rows: any[] | undefined): Store[] | undefined {
   if (rows !== undefined && rows.length > 0) {
     return rows.map(row => ({
       id: row.id,
