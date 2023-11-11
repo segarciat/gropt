@@ -1,5 +1,5 @@
 import tap from "tap"
-import { buildListStores, ListStoreCommandOptions, ListStoresHandler } from "../../../src/commands/list-stores.js"
+import { buildListStores, ListStoreCommandOptions } from "../../../src/commands/list-stores.js"
 import { DBConnection } from "../../../src/types.js"
 import { Command } from "commander"
 

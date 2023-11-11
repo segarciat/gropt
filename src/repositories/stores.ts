@@ -62,7 +62,7 @@ export async function findStoresByPattern (db: DBConnection, pattern: string): P
  */
 export async function findStoreById (db: DBConnection, id: number): Promise<Store | undefined> {
   const { rows } = await db.query(
-    'SELECT * FROM stores WHERE id = $1 ORDER BY store_name ASC',
+    'SELECT * FROM stores WHERE id = $1',
     [id]
   )
   return parseDBStores(rows)?.[0]
