@@ -8,7 +8,7 @@ import { findStoresByPattern, createStore, findStoreById, findAllStores } from '
 let mockConnection: DBConnection
 
 tap.beforeEach(async function () {
-  mockConnection = await pool["_pool"].connect()
+  mockConnection = await (pool as any)._pool.connect()
   await mockConnection.query('BEGIN;')
 })
 
@@ -32,7 +32,7 @@ await tap.test('Creating a store in database enables finding them', async functi
   t.match(foundById, storeDetails)
 })
 
-await tap.test('Creating multiple stores enables finding them by pattern', async function(t) {
+await tap.test('Creating multiple stores enables finding them by pattern', async function (t) {
   const storeDetails0 = {
     storeName: 'a Circle Market'
   }
@@ -44,7 +44,7 @@ await tap.test('Creating multiple stores enables finding them by pattern', async
   const storeDetails2 = {
     storeName: 'c Store store'
   }
-  const pattern = "market"
+  const pattern = 'market'
 
   await createStore(mockConnection, storeDetails0)
   await createStore(mockConnection, storeDetails1)
@@ -55,6 +55,6 @@ await tap.test('Creating multiple stores enables finding them by pattern', async
   t.equal(allStores?.length, 3)
   t.equal(matchingStores?.length, 2)
 
-  t.matchOnlyStrict(matchingStores?.[0], {id: Number, storeName: storeDetails0.storeName})
-  t.matchOnlyStrict(matchingStores?.[1], {id: Number, storeName: storeDetails1.storeName})
+  t.matchOnlyStrict(matchingStores?.[0], { id: Number, storeName: storeDetails0.storeName })
+  t.matchOnlyStrict(matchingStores?.[1], { id: Number, storeName: storeDetails1.storeName })
 })

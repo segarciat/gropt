@@ -1,14 +1,14 @@
 import tap from 'tap'
 import pg from 'pg'
 import 'dotenv/config'
-import { pool } from "../../../src/db.js"
-import { findProductsByPattern, createProduct, Product, findProductById, findAllProducts } from "../../../src/repositories/products.js"
+import { pool } from '../../../src/db.js'
+import { findProductsByPattern, createProduct, Product, findProductById, findAllProducts } from '../../../src/repositories/products.js'
 import { DBConnection } from '../../../src/types.js'
 
 let mockConnection: DBConnection
 
 tap.beforeEach(async function () {
-  mockConnection = await pool["_pool"].connect()
+  mockConnection = await (pool as any)._pool.connect()
   await mockConnection.query('BEGIN;')
 })
 
@@ -26,7 +26,7 @@ await tap.test('Creating a product in database enables finding it', async functi
 
   const nonExistentProduct = await findProductsByPattern(mockConnection, productDetails.productName)
   const insertedProductId = await createProduct(mockConnection, productDetails)
-  const foundProduct = await findProductById(mockConnection, insertedProductId!)
+  const foundProduct = await findProductById(mockConnection, insertedProductId ?? NaN)
 
   t.notOk(nonExistentProduct)
   t.ok(insertedProductId)
@@ -34,7 +34,7 @@ await tap.test('Creating a product in database enables finding it', async functi
   t.match(foundProduct, productDetails)
 })
 
-await tap.test('Products can be found by a pattern', async function(t) {
+await tap.test('Products can be found by a pattern', async function (t) {
   const productDetails0 = {
     productName: 'a green bell pepper',
     brand: 'best farms'
@@ -61,6 +61,6 @@ await tap.test('Products can be found by a pattern', async function(t) {
   t.equal(allProducts?.length, 3)
   t.equal(matchingProducts?.length, 2)
 
-  t.matchOnlyStrict(matchingProducts?.[0], {id: Number, ...productDetails0})
-  t.matchOnlyStrict(matchingProducts?.[1], {id: Number, ...productDetails1})
+  t.matchOnlyStrict(matchingProducts?.[0], { id: Number, ...productDetails0 })
+  t.matchOnlyStrict(matchingProducts?.[1], { id: Number, ...productDetails1 })
 })

@@ -10,7 +10,7 @@ import { Purchase, createPurchase } from '../../../src/repositories/purchases.js
 let mockConnection: DBConnection
 
 tap.beforeEach(async function () {
-  mockConnection = await pool["_pool"].connect()
+  mockConnection = await (pool as any)._pool.connect()
   await mockConnection.query('BEGIN;')
 })
 
@@ -22,16 +22,16 @@ tap.afterEach(async function () {
 
 await tap.test('Creating purchases in databases succeeds if related store and product exist.', async function (t) {
   // Arrange
-  const productId = await createProduct(mockConnection, { productName: 'Apples', brand: 'Natures Best'})
+  const productId = await createProduct(mockConnection, { productName: 'Apples', brand: 'Natures Best' })
   const storeId = await createStore(mockConnection, { storeName: 'Supermarket' })
-  const purchaseDetails = {
-    productId: productId,
-    storeId: storeId,
+  const purchaseDetails: Omit<Purchase, 'id'> = {
+    productId: productId ?? NaN,
+    storeId: storeId ?? NaN,
     cost: 15.0,
     amount: 7,
     units: 'lb',
     datePurchased: new Date()
-  } as Omit<Purchase, 'id'>
+  }
 
   // Act
   const purchase = await createPurchase(mockConnection, purchaseDetails)
@@ -47,16 +47,16 @@ await tap.test('Creating purchases in databases succeeds if related store and pr
 
 await tap.test('Creating a duplicate purchase throws an exception', async function (t) {
   // Arrange
-  const productId = await createProduct(mockConnection, { productName: 'Apples', brand: 'Natures Best'})
+  const productId = await createProduct(mockConnection, { productName: 'Apples', brand: 'Natures Best' })
   const storeId = await createStore(mockConnection, { storeName: 'Supermarket' })
-  const purchaseDetails = {
-    productId: productId,
-    storeId: storeId,
+  const purchaseDetails: Omit<Purchase, 'id'> = {
+    productId: productId ?? NaN,
+    storeId: storeId ?? NaN,
     cost: 15.0,
     amount: 7,
     units: 'lb',
     datePurchased: new Date()
-  } as Omit<Purchase, 'id'>
+  }
 
   const purchase = await createPurchase(mockConnection, purchaseDetails)
 

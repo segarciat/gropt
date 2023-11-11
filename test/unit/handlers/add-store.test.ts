@@ -1,25 +1,25 @@
-import tap from "tap"
-import { DBConnection } from "../../../src/types.js"
-import { Store } from "../../../src/repositories/stores.js"
-import { AddStoreHandlerOptions } from "../../../src/commands/add-store.js"
+import tap from 'tap'
+import { DBConnection } from '../../../src/types.js'
+import { Store } from '../../../src/repositories/stores.js'
+import { AddStoreHandlerOptions } from '../../../src/commands/add-store.js'
 
-tap.test("add store handler should call createStore with db connection", async function(t) {
+await tap.test('add store handler should call createStore with db connection', async function (t) {
   // Arrange
   const store: AddStoreHandlerOptions = {
-    storeName: 'Bell Peppers',
+    storeName: 'Bell Peppers'
   }
   const mockConnection = {
-    query: async (...args) => {}
-  } as any
+    query: async (...args: any[]) => {}
+  } as any as DBConnection
   const createStoreSpy = await t.captureFn(
     async (db: DBConnection, store: Omit<Store, 'id'>) => {}
   )
 
-  const { addStoreHandler } = await t.mockImport("../../../src/handlers/add-store.js", {
-    "../../../src/repositories/stores.js": {
+  const { addStoreHandler } = await t.mockImport('../../../src/handlers/add-store.js', {
+    '../../../src/repositories/stores.js': {
       createStore: createStoreSpy
     }
-  }) as typeof import("../../../src/handlers/add-store.js")
+  }) as typeof import('../../../src/handlers/add-store.js')
 
   // Act
   await addStoreHandler(mockConnection, store)

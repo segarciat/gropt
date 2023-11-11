@@ -15,6 +15,6 @@
   "compilerOptions": {
     "outDir": "dist",                                   /* Specify an output folder for all emitted files. */
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "test/**/*"],
   "exclude": ["node_modules"]
 }
