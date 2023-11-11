@@ -11,8 +11,9 @@ export type StoreIdentifiers = Pick<Store, 'id' | 'storeName'>
  * Creates a new store in the database.
  * @param db Connection used to make the database request.
  * @param store Store details to save.
+ * @returns id of inserted store.
  */
-export async function createStore (db: DBConnection, store: Omit<Store, 'id'>): Promise<Store | undefined> {
+export async function createStore (db: DBConnection, store: Omit<Store, 'id'>): Promise<number | undefined> {
   const { storeName } = store
   const { rows } = await db.query(
     `INSERT INTO stores (store_name) 
@@ -26,7 +27,7 @@ export async function createStore (db: DBConnection, store: Omit<Store, 'id'>): 
      RETURNING *;`,
     [storeName]
   )
-  return parseDBStores(rows)?.[0]
+  return parseDBStores(rows)?.[0]?.id
 }
 
 /**

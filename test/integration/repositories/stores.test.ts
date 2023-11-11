@@ -23,15 +23,13 @@ await tap.test('Creating a store in database enables finding them', async functi
     storeName: 'Circle'
   }
   const nonExistentStore = await findStoresByPattern(mockConnection, storeDetails.storeName)
-  const insertedStore = await createStore(mockConnection, storeDetails)
-  const foundByPattern = await findStoresByPattern(mockConnection, storeDetails.storeName)
-  const foundById = await findStoreById(mockConnection, insertedStore?.id as number)
+  const insertedStoreId = await createStore(mockConnection, storeDetails)
+  const foundById = await findStoreById(mockConnection, insertedStoreId as number)
 
   t.notOk(nonExistentStore)
-  t.match(insertedStore, { id: Number })
-  t.same(insertedStore, foundByPattern?.[0])
-  t.same(insertedStore, foundById)
-  t.match(insertedStore, storeDetails)
+  t.ok(insertedStoreId)
+  t.same(foundById?.id, insertedStoreId)
+  t.match(foundById, storeDetails)
 })
 
 await tap.test('Creating multiple stores enables finding them by pattern', async function(t) {
